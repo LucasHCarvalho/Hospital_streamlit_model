@@ -13,7 +13,26 @@ st.title('Relatório Financeiro - Hospital')
 # Filtro por data (período de análise)
 start_date = st.date_input('Data Início', df['Data'].min())
 end_date = st.date_input('Data Fim', df['Data'].max())
+
+cid_selecionado = st.multiselect(
+    "Selecione o(s) CID(s)",
+    options=sorted(df["CID"].dropna().unique())
+)
+
+procedimento_selecionado = st.multiselect(
+    "Selecione o(s) Procedimento(s)",
+    options=sorted(df["Procedimento"].dropna().unique())
+)
+
 df_filtered = df[(df['Data'] >= pd.to_datetime(start_date)) & (df['Data'] <= pd.to_datetime(end_date))]
+
+df_filtered = df_filtered.copy()
+
+if cid_selecionado:
+    df_filtered = df_filtered[df_filtered["CID"].isin(cid_selecionado)]
+
+if procedimento_selecionado:
+    df_filtered = df_filtered[df_filtered["Procedimento"].isin(procedimento_selecionado)]
 
 # Gráfico de Linha - Faturamento e Tendência
 st.subheader('Faturamento e Tendência')
